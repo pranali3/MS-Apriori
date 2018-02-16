@@ -1,5 +1,3 @@
-
-
 import java.io.*;
 import static java.lang.Integer.parseInt;
 import java.util.*;
@@ -8,19 +6,6 @@ import java.util.LinkedHashMap;
 
 public class MSApriori {
 
- 
-    
-//        AprioriCalculation ap = new AprioriCalculation();
-
-  //      ap.aprioriProcess();
-    //}
-
-/******************************************************************************
- * Class Name   : AprioriCalculation
- * Purpose      : generate Apriori itemsets
- *****************************************************************************/
-/*class AprioriCalculation
-{*/
     Vector<String> candidates=new Vector<String>(); //the current candidates
     static String inputFile; //configuration file
     static String inputParamFile; //transaction file
@@ -33,7 +18,7 @@ public class MSApriori {
     static int mustContain[];
     static PrintWriter pr;
     double minSup; //minimum support for a frequent itemset
-    static int transactions[];
+    static int transactions[][];
 
     /************************************************************************
      * Method Name  : aprioriProcess
@@ -80,15 +65,7 @@ public class MSApriori {
      * Parameters   : None
      * Return       : String value of the users input
      *************************************************************************/
-    public static ArrayList<Integer> arrayStringToIntegerArray(String arrayString){
-    String removedBrackets = arrayString.substring(1, arrayString.length() - 1);
-    String[] individualNumbers = removedBrackets.split(",");
-    ArrayList<Integer> integerArrayList = new ArrayList<>();
-    for(String numberString : individualNumbers){
-        integerArrayList.add(Integer.parseInt(numberString.trim()));
-    }
-    return integerArrayList;
-}
+    
      static void getinput() throws FileNotFoundException, NumberFormatException
      {
          File file = new File("C:\\Users\\parbhakar loke\\Documents\\NetBeansProjects\\JavaApplication3\\src\\input-data.txt");
@@ -98,9 +75,7 @@ public class MSApriori {
         ArrayList<String> Transactions = new ArrayList<String>();
         String input="";
         List<Integer> newList ;
-        
-       // FileInputStream file_in = new FileInputStream(inputFile);
-         BufferedReader reader = new BufferedReader(new FileReader(file));
+        BufferedReader reader = new BufferedReader(new FileReader(file));
         String parts[] = null;
         int intParts[] = null;
         //try to get users input, if there is an error print the message
@@ -117,24 +92,20 @@ public class MSApriori {
                 Transactions.add(Arrays.toString(intParts));
                 numTransactions++;
             }
-           
-            for (int i = 0; i < Transactions.size(); i++)
-            {
-                System.out.println(Transactions.get(i));
-                System.out.println(arrayStringToIntegerArray(Transactions.get(0)));
-            }
             
-    Iterator<Integer> iterator = arrayStringToIntegerArray(Transactions.get(0)).iterator();
-    int[] ret = new int[Transactions.size()];
-   
-    for (int i = 0; i < ret.length; i++)
-    {
-        ret[i] = iterator.next().intValue();//output in array of 1 transaction
-    }
-    
-    
-            System.out.println("ret= "+Arrays.toString(ret));
-        }catch (IOException e) {
+           transactions=new int[Transactions.size()][];
+           int j=0;
+            for (int i = 0; i < Transactions.size(); i++)
+            {  System.out.println(Transactions.get(i));
+                String removedBrackets = Transactions.get(i).substring(1, Transactions.get(i).length() - 1);
+                String[] individualNumbers = removedBrackets.split(",");
+               transactions[i] = new int[individualNumbers.length];
+               for(j=0;j<individualNumbers.length;j++)
+               { transactions[i][j] =Integer.parseInt(individualNumbers[j].trim());
+                    System.out.println("val="+transactions[i][j]);
+               }
+           }
+       }catch (IOException e) {
             System.out.println("Could not load transaction set.");
             e.printStackTrace();
             
@@ -207,7 +178,7 @@ public class MSApriori {
                 cannotBeTogether=new int[parts.length][];
                 for(int i = 0; i < parts.length; i++) {
                   s1=parts[i].replace(" ","").replace("{", "").replace("}", "");
-                   System.out.println("s1="+s1);
+                   
                  String[] partIDs=s1.split(",");
                  int j=0;
                  
